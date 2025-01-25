@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Parts - Spellbreaker Inventory</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" th:href="@{/assets/styles.css}">
+</head>
+<script>
+    function searchItems() {
+        let input = document.getElementById("Search");
+        let filter = input.value.toLowerCase();
+        let nodes = document.getElementsByClassName('target');
+
+        for (let i of nodes) {
+            if (i.innerText.toLowerCase().includes(filter)) {
+                i.style.display = "";
+            } else {
+                i.style.display = "none";
+            }
+        }
+    }
+</script>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<br>
+<h1 class="title">Parts Inventory</h1>
+
+<div class="columns">
+    <div class="column">
+        <div class="field">
+            <div class="control">
+                <input class="input" type="text" id="Search" onkeyup="searchItems()"
+                       placeholder="Find a specific part.">
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <form method="post" th:action="@{'/create-part'}">
+            <div class="field has-addons">
+                <div class="control">
+                    <input class="input" type="text" name="partName" placeholder="Part Name" required
+                           autocomplete="off">
+                </div>
+                <div class="control">
+                    <button class="button is-primary deviceBtn" type="submit">Add Part</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<br>
+
+<table class="table is-bordered is-striped is-fullwidth">
+    <thead>
+    <tr>
+        <th>SKU</th>
+        <th>Part Name</th>
+        <th>Quantity</th>
+        <th>x</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr th:each="part : ${parts}" class="target">
+        <td><span th:text="${part.getId().toString()}"></span></td>
+        <td><span th:text="${part.getPartName()}"></span></td>
+        <td><span th:text="${part.getQuantity()}"></span></td>
+        <td class="flex">
+            <form method="post" th:action="@{'/delete-sku'}">
+                <input type="hidden" name="partId" th:value="${part.getId()}">
+                <button type="submit" class="button is-danger" style="margin: 5px 0 5px 0;">🗑️</button>
+            </form>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</body>
+</html>

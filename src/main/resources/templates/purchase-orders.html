@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Purchase Orders - Spellbreaker Inventory</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" th:href="@{/assets/styles.css}">
+</head>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<br>
+<h1 class="title">Purchase Orders</h1>
+
+<form method="post" th:action="@{'/create-po'}">
+    <div class="columns">
+    <div class="column">
+        <input class="input" type="text" name="retailer" placeholder="Supplier" required>
+    </div>
+    <div class="column">
+        <input class="input" type="text" name="orderNo" placeholder="Order Number">
+    </div>
+    <div class="column">
+        <button class="button is-primary deviceBtn" type="submit">Create Purchase Order</button>
+    </div>
+    </div>
+</form>
+
+<br>
+
+<table class="table is-bordered is-striped is-fullwidth">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Supplier</th>
+        <th>Order Date</th>
+        <th>Total Price</th>
+        <th>Order Number</th>
+        <th>x</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr th:each="po : ${purchaseOrders}">
+        <td th:if="${po.getStatus() == 'Not finalized'}"><a class="button is-info" style="float:none!important; display:inline;" th:href="@{/po-details/{id}(id=${po.getId()})}" th:text="${po.getId()}"></a></td>
+        <td th:if="${po.getStatus() == 'Finalized'}"><span th:text="${po.getId()}"></span></td>
+        <td><span th:text="${po.getStatus()}"></span></td>
+        <td><span th:text="${po.getRetailer()}"></span></td>
+        <td><span th:text="${po.getTimestamp()}"></span></td>
+        <td><span th:text="${po.getTotalPrice()}"></span></td>
+        <td><span th:text="${po.getOrderNo()}"></span></td>
+        <td class="flex">
+            <form method="post" th:action="@{'/delete-po/' + ${po.getId()}}">
+                <input type="hidden" name="poId" th:value="${po.getId()}">
+                <button type="submit" class="button is-danger" style="margin: 5px 0 5px 0;">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</body>
+</html>

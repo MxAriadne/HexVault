@@ -1,0 +1,176 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Spellbreaker Inventory</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" th:href="@{/assets/styles.css}">
+</head>
+
+<script>
+    function updateSuggestions(input, type) {
+        const query = input.value;
+
+        if (query.length === 0) {
+            hideSuggestions();
+            return;
+        }
+
+        const url = `/autocomplete?query=${query}&type=${type}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(parts => {
+                const suggestionBox = document.getElementById('partSuggestions');
+                suggestionBox.innerHTML = parts
+                    .map(part => `
+                        <li style="list-style-type: none; padding: 0; margin: 0" onclick="selectPart('${part.partNumber}')">
+                            ${part.partNumber} - ${part.partName}
+                        </li>`)
+                    .join('');
+                console.log("Fetched suggestions:", parts);
+                if (parts.length === 0) {
+                    suggestionBox.style.display = 'none';
+                } else {
+                    suggestionBox.style.display = 'block';
+                }
+            })
+            .catch(err => console.error('Error fetching suggestions:', err));
+    }
+
+    function selectPart(part) {
+        // Autofill email and phone inputs
+        document.getElementById('partInput').value = part;
+
+        // Hide suggestion boxes
+        hideSuggestions();
+    }
+
+    function hideSuggestions() {
+        document.getElementById('partSuggestions').style.display = 'none';
+    }
+
+</script>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<br>
+<div class="container">
+    <div class="columns">
+        <div class="column">
+            <h1 class="title" th:text="${device.getDeviceName()}"></h1>
+            <p th:text="${device.getCustomer().getCustomerName()}"></p>
+            <p th:text="${device.getCustomer().getEmail()}"></p>
+            <p th:text="${device.getCustomer().getPhoneNumber()}"></p>
+            <br>
+            <p><span th:text="${'Check in date: ' + #dates.format(device.getTimestamp(), 'MM/dd/yyyy')}"></span></p>
+        </div>
+        <div class="column">
+            <h1 class="title">Check-in Notes</h1>
+            <p style="white-space: pre-wrap;" th:text="${device.getDescription()}"></p>
+        </div>
+    </div>
+
+    <hr>
+    <br><br><br>
+
+    <script>
+        // Check if the URL has an "error=true" parameter
+        window.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const partError = document.getElementById("part-error");
+
+            if (urlParams.has("part-use-error")) {
+                // Display the error message and update its content
+                partError.style.display = "block";
+                partError.textContent = "This part is in use on another device!";
+            }
+            if (urlParams.has("part-mismatch-error")) {
+                // Display the error message and update its content
+                partError.style.display = "block";
+                partError.textContent = "This part does not exist!";
+            }
+        });
+    </script>
+
+    <div class="columns">
+        <div class="column">
+            <h1 class="title">Parts</h1>
+            <form method="post" th:action="@{'/add-part/' + ${device.getId()}}">
+                <div class="field has-addons">
+                    <div class="control">
+                        <input class="input" type="text" id="partInput" name="partInput" placeholder="Add part from inventory" oninput="updateSuggestions(this, 'part')" autocomplete="off" />
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Add Part</button>
+                    </div>
+                </div>
+                <div id="partSuggestions" class="suggestion-box" style="display: none;"></div>
+                <div id="part-error" style="display: none; color: red;"></div>
+            </form>
+            <table class="table is-bordered is-striped is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Part Number</th>
+                        <th>Part Name</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="part : ${parts}">
+                            <form method="post" th:action="@{'/update/' + ${part.getId()}}">
+                                <td th:text="${part.getSku().getId()}"></td>
+                                <td th:text="${part.getSku().getPartName()}"></td>
+                                <td><input class ="input" name="price" id="price" th:text="${part.getPrice()}"></td>
+                                <input type="hidden" name="deviceId" th:value="${device.getId()}">
+                                <td><button type="submit" class="button is-info">Update Price</button></td>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="column">
+            <h1 class="title">Notes</h1>
+
+            <table class="table is-bordered is-striped is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Notes</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <form method="post" th:action="@{'/add-note/' + ${device.getId()}}">
+                            <td>
+                                <div class="field">
+                                    <div class="control">
+                                        <textarea class="textarea" rows="4" placeholder="Add a note" id="noteText" name="noteText"></textarea>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="submit" class="button is-info">Add Note</button>
+                            </td>
+                        </form>
+                    </tr>
+                    <tr th:each="note : ${notes}">
+                        <td style="white-space: pre-wrap;" th:text="${note.getNote()}"></td>
+                        <td class="is-narrow">
+                            <form method="post" th:action="@{'/delete-note/' + ${note.getId()}}">
+                                <input type="hidden" name="deviceId" th:value="${device.getId()}">
+                                <button type="submit" class="button is-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

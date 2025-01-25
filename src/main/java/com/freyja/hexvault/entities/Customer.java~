@@ -1,0 +1,7 @@
+package com.freyja.hexvault.entities;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class Customer {
+  }

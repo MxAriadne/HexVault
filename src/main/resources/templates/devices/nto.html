@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Spellbreaker Inventory</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" th:href="@{/assets/styles.css}">
+</head>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<nav class="level" style="margin-top: 10px">
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="heading">Awaiting Repair</p>
+            <button id="awaiting-repair" class="title" onclick="location.href='/';" th:text="${awaitingRepair.size()}"></button>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="heading">In Progress</p>
+            <button id="in-progress" class="title" onclick="location.href='/devices/ip';" th:text="${inprogress.size()}"></button>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="heading">Ready for Pickup</p>
+            <button id="ready-for-pickup" class="title" onclick="location.href='/devices/rfp';" th:text="${complete.size()}"></button>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div class="active-level">
+            <p class="heading">Need To Order</p>
+            <button id="need-to-order" class="title" onclick="location.href='/devices/nto';" th:text="${needToOrder.size()}"></button>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="heading">Awaiting Parts</p>
+            <button id="awaiting-parts" class="title" onclick="location.href='/devices/ap';" th:text="${awaitingParts.size()}"></button>
+        </div>
+    </div>
+</nav>
+<script>
+    function searchItems() {
+        let input = document.getElementById("Search");
+        let filter = input.value.toLowerCase();
+        let nodes = document.getElementsByClassName('target');
+
+        for (let i of nodes) {
+            if (i.innerText.toLowerCase().includes(filter)) {
+                i.style.display = "";
+            } else {
+                i.style.display = "none";
+            }
+        }
+    }
+</script>
+
+<div class="field">
+    <div class="control">
+        <input class="input" type="text" id="Search" onkeyup="searchItems()" placeholder="Find a specific workorder">
+    </div>
+</div>
+<div th:each="device : ${needToOrder}">
+    <div class="card target">
+        <header class="card-header">
+            <p class="card-header-title"><span th:text="${device.getDeviceName()}"></span></p>
+        </header>
+        <div class="card-content">
+            <div class="columns">
+                <div class="column">
+                    <p th:text="${device.getCustomer().getCustomerName()}"></p>
+                    <p th:text="${device.getCustomer().getEmail()}"></p>
+                    <p th:text="${device.getCustomer().getPhoneNumber()}"></p>
+                    <p><span th:text="${#dates.format(device.getTimestamp(), 'hh:mm a - MM/dd/yyyy')}"></span></p>
+                </div>
+                <div class="column">
+                    <p th:text="${device.getDescription()}"></p>
+                </div>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <a th:href="${'/devices/' + device.getId()}" class="card-footer-item">View</a>
+            <a th:href="${'/delete/' + device.getId()}" class="card-footer-item">Delete</a>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

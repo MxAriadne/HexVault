@@ -1,0 +1,5 @@
+<ul th:fragment="part-suggestions" >
+    <li style="list-style-type: none; padding: 0; margin: 0" th:each="part : ${parts}" onclick="selectPart('${part.getId()}')">
+        <p th:text="${part.getPartNumber()}"></p><br><p th:text="${part.getPartName()}"></p>
+    </li>
+</ul>

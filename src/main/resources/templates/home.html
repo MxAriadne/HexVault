@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.sidenav');
+    const options = {
+      'edge': 'left'
+    };
+    var instances = M.Sidenav.init(elems, options);
+
+    // Enable this to make the side-nav open automatically when page is loaded.
+    // instances[0].open();
+  });
+</script>
+
+<head>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.1.1/dist/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@materializecss/materialize@2.1.1/dist/js/materialize.min.js"></script>
+  <!-- Import Material Icons from Google -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/assets/styles.css}">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HexVault - Home</title>
+</head>
+
+<body>
+
+<ul id="slide-out" class="sidenav sidenav-fixed">
+  <li><a href="#!">First Sidebar Link</a></li>
+  <li><a href="#!">Second Sidebar Link</a></li>
+</ul>
+<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+
+<div class="row">
+  <div class="col s1"><button class="btn-large filled waves-effect waves-light purple darken-3">Awaiting Repair</button></div>
+  <div class="col s1"><button class="btn-large filled waves-effect waves-light purple lighten-1">In Progress</button></div>
+  <div class="col s1"><button class="btn-large filled waves-effect waves-light purple lighten-1">Ready for Pickup</button></div>
+  <div class="col s1"><button class="btn-large filled waves-effect waves-light purple lighten-1">Need To Order</button></div>
+  <div class="col s1"><button class="btn-large filled waves-effect waves-light purple lighten-1">Awaiting Parts</button></div>
+</div>
+
+
+
+</body>
+</html>
+

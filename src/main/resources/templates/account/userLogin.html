@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Spellbreaker Inventory</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <link rel="stylesheet" th:href="@{/assets/styles.css}">
+</head>
+<body>
+<script>
+  // Check if the URL has an "error=true" parameter
+  window.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginError = document.getElementById("login-error");
+
+    if (urlParams.has("error")) {
+      // Display the error message and update its content
+      loginError.style.display = "block";
+      loginError.textContent = "Invalid username or password. Please try again.";
+    }
+  });
+</script>
+<div class="login_container">
+  <form th:action="@{/login}" method="post">
+    <a href="/">
+      <img th:src="@{/assets/logo.png}" style="scale: 50%;" alt="Spellbreaker Logo">
+    </a>
+    <div class="field" style="margin-top: 5%">
+      <p class="control has-icons-left has-icons-right">
+        <input name="username" class="input" type="text" placeholder="Username" />
+        <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+        <span class="icon is-small is-right">
+                  <i class="fas fa-check"></i>
+                </span>
+      </p>
+    </div>
+    <div class="field">
+      <p class="control has-icons-left has-icons-right">
+        <input name="password" class="input" type="password" placeholder="Password" />
+        <span class="icon is-small is-left">
+                  <i class="fas fa-lock"></i>
+                </span>
+      </p>
+    </div>
+    <div style="display: inline">
+      <button class="button is-primary" type="submit">Login</button>
+      <button class="button is-danger">Reset Password</button>
+
+    </div>
+    <br>
+    <div id="login-error" style="display: none; color: red;"></div>
+  </form>
+
+
+
+</div>
+</body>
+</html>

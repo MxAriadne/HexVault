@@ -1,0 +1,145 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Create Purchase Order - Spellbreaker Inventory</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" th:href="@{/assets/styles.css}">
+    <!-- Import JS for jQuery. -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<script>
+    function updateSuggestions(input, type) {
+        const query = input.value;
+
+        if (query.length === 0) {
+            hideSuggestions("parts");
+            return;
+        }
+
+        const url = `/autocomplete?query=${query}&type=${'sku'}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(parts => {
+                const suggestionBox = document.getElementById(type + 'Suggestions');
+                suggestionBox.innerHTML = parts
+                    .map(part => `
+                        <li style="list-style-type: none; padding: 0; margin: 0" onclick="selectPart('${part.partNumber}', '${part.partName}')">
+                            ${part.partNumber} - ${part.partName}
+                        </li>`)
+                    .join('');
+                console.log("Fetched suggestions:", parts);
+                if (parts.length === 0) {
+                    suggestionBox.style.display = 'none';
+                } else {
+                    suggestionBox.style.display = 'block';
+                }
+            })
+            .catch(err => console.error('Error fetching suggestions:', err));
+    }
+
+    function selectPart(partNumber, partName) {
+        // Autofill email and phone inputs
+        document.getElementById('partNumber').value = partNumber;
+        document.getElementById('partName').value = partName;
+
+        // Hide both suggestion boxes
+        hideSuggestions('partNumber');
+        hideSuggestions('partName');
+    }
+
+    function showSuggestions(type) {
+        document.getElementById(type + 'Suggestions').style.display = 'block';
+    }
+
+    function hideSuggestions(type) {
+        document.getElementById(type + 'Suggestions').style.display = 'none';
+    }
+
+</script>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<br>
+<div class="columns">
+    <div class="column">
+        <h1 class="title" th:text="'Purchase Order #' + ${po.getId()}"></h1>
+        <h1 class="title" th:if="${po.getOrderNo() != ''}"
+            th:text="'Supplier: ' + ${po.getRetailer()} + ' (' + ${po.getOrderNo()} + ')'"></h1>
+        <h1 class="title" th:unless="${po.getOrderNo() != ''}"
+            th:text="'Supplier: ' + ${po.getRetailer()} + ' (N/A)'"></h1>
+    </div>
+    <div class="column" th:if="${po.getStatus() == 'Not finalized'}">
+        <form method="post" th:action="@{'/finalize-po/' + ${po.getId()}}">
+            <input type="hidden" name="poId" th:value="${po.getId()}">
+            <button style="margin: 0 10px 10px 0;" type="submit" class="button is-primary">✔️</button>
+        </form>
+        <form method="post" th:action="@{'/delete-po/' + ${po.getId()}}">
+            <input type="hidden" name="poId" th:value="${po.getId()}">
+            <button style="margin: 0 10px 0 0;" type="submit" class="button is-danger">🗑️</button>
+        </form>
+    </div>
+    <div class="column" th:if="${po.getStatus() == 'Finalized'}">
+        <form method="post" th:action="@{'/delete-po/' + ${po.getId()}}">
+            <input type="hidden" name="poId" th:value="${po.getId()}">
+            <button style="margin: 0 10px 10px 0;" type="submit" class="button is-danger">🗑️</button>
+        </form>
+    </div>
+</div>
+
+<br>
+<div>
+    <table class="table is-bordered is-striped is-fullwidth">
+        <thead>
+        <tr>
+            <th>Part Number</th>
+            <th>Part Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>x</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <form method="post" th:action="@{'/add-part-po'}">
+                <div class="autocomplete-wrapper">
+                    <td><input class="input" type="text" onkeyup="updateSuggestions(this, 'partNumber')"
+                               name="partNumber" id="partNumber" placeholder="Part Number" required autocomplete="off">
+                        <div id="partNumberSuggestions" class="suggestion-box" style="display: none;"></div>
+                    </td>
+
+                </div>
+                <div class="autocomplete-wrapper">
+                    <td><input class="input" type="text" onkeyup="updateSuggestions(this, 'partName')" name="partName"
+                               id="partName" placeholder="Part Name" required autocomplete="off">
+                        <div id="partNameSuggestions" class="suggestion-box" style="display: none;"></div>
+                    </td>
+                </div>
+                <td><input class="input" type="number" name="quantity" placeholder="Quantity" required autocomplete="off"></td>
+                <td><input class="input" type="number" name="price" placeholder="Price" required autocomplete="off"></td>
+                <input type="hidden" name="poId" th:value="${po.getId()}">
+                <td>
+                    <button class="button is-info">Add Part</button>
+                </td>
+            </form>
+        </tr>
+        <form method="post" th:action="@{'/remove-part/'}">
+            <tr th:each="part : ${parts}">
+                <td th:text="${part.getSku().getId()}"></td>
+                <td th:text="${part.getSku().getPartName()}"></td>
+                <td th:text="${part.getQuantity()}"></td>
+                <td th:text="${part.getPrice()}"></td>
+                <input type="hidden" name="poId" th:value="${po.getId()}">
+                <input type="hidden" name="partId" th:value="${part.getId()}">
+                <td>
+                    <button type="submit" class="button is-danger">🗑️</button>
+                </td>
+            </tr>
+        </form>
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>
