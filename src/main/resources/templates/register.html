@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!--  Tailwind CSS  -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" th:href="@{/assets/register.css}">
+    <script>
+        // Tailwind Configuration for dark mode
+        tailwind.config = {
+            darkMode: 'class', // Enables class-based dark mode
+        };
+
+        // Preserve mode preference in localStorage
+        document.addEventListener("DOMContentLoaded", () => {
+            const htmlElement = document.documentElement;
+            const mode = localStorage.getItem("theme");
+
+            if (mode === "dark") {
+                htmlElement.classList.add("dark");
+            } else {
+                htmlElement.classList.remove("dark");
+            }
+        });
+    </script>
+    <title>HexVault - Register</title>
+</head>
+<body class="font-body antialiased">
+<div class="w-[100%] h-[100%] place-content-center xl:w-[100%] xl:h-[100%]">
+    <section class="mx-auto max-w-4xl rounded-md bg-white p-6 shadow-md dark:bg-gray-800">
+        <h2 class="font-body text-lg font-semibold capitalize text-gray-700 dark:text-white">Request Account Creation</h2>
+        <form
+                data-error="Something went wrong. Please try again"
+                data-success="Thank you for your submission."
+                method="post"
+                action="/api/register/submit">
+            <input name="formname" type="hidden" value="Form" />
+            <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                    <input
+                            id="firstName"
+                            name="input"
+                            class="focus:border-primary-400 focus:ring-primary-300 dark:focus:border-primary-300 mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                            type="text"
+                            placeholder="First Name" />
+                </div>
+                <div>
+                    <input
+                            id="lastName"
+                            name="input"
+                            class="focus:border-primary-400 focus:ring-primary-300 dark:focus:border-primary-300 mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                            type="text"
+                            placeholder="Last Name" />
+                </div>
+                <div>
+                    <input
+                            id="username"
+                            name="input"
+                            class="focus:border-primary-400 focus:ring-primary-300 dark:focus:border-primary-300 mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                            type="text"
+                            placeholder="Username" />
+                </div>
+                <div>
+
+                    <input
+                            id="email"
+                            name="input"
+                            class="focus:border-primary-400 focus:ring-primary-300 dark:focus:border-primary-300 mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                            type="email"
+                            placeholder="Email" />
+                </div>
+                <div>
+                    <input
+                            id="password"
+                            name="input"
+                            class="focus:border-primary-400 focus:ring-primary-300 dark:focus:border-primary-300 mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                            type="password"
+                            placeholder="Password" />
+                </div>
+                <div>
+                    <input
+                            id="passwordConfirmation"
+                            name="input"
+                            class="focus:border-primary-400 focus:ring-primary-300 dark:focus:border-primary-300 mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 focus:outline-none focus:ring focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                            type="password"
+                            placeholder="Password Confirmation" />
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button
+                        class="transform rounded-md bg-gray-700 px-8 py-2.5 leading-5 text-white transition-colors duration-300 hover:bg-gray-600 focus:bg-gray-600 focus:outline-none"
+                        type="submit">
+                    <span>Register</span>
+                </button>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+
+</html>

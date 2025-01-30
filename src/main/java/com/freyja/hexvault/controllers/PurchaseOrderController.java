@@ -34,7 +34,7 @@ public class PurchaseOrderController {
     @Autowired
     private PartsRepository partsRepo;
 
-    @GetMapping("/purchase-orders")
+    @GetMapping("/purchasing")
     public String purchaseOrder(Model model) {
 
         List<PurchaseOrder> purchaseOrders = (List<PurchaseOrder>) purchaseOrderRepo.findAll();
@@ -43,7 +43,7 @@ public class PurchaseOrderController {
 
         model.addAttribute("purchaseOrders", purchaseOrders);
 
-        return "purchase-orders";
+        return "purchasing";
     }
 
     @GetMapping("/po-details/{poId}")

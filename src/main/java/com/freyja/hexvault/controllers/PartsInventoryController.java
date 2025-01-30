@@ -1,7 +1,6 @@
 package com.freyja.hexvault.controllers;
 
 import com.freyja.hexvault.entities.PartsSku;
-import com.freyja.hexvault.repos.PartsRepository;
 import com.freyja.hexvault.repos.SKURepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,7 @@ public class PartsInventoryController {
     @Autowired
     private SKURepository skuRepo;
 
-    @GetMapping("/parts")
+    @GetMapping("/inventory")
     public String parts(Model model) {
         model.addAttribute("parts", skuRepo.findAll());
         return "parts";
@@ -28,12 +27,12 @@ public class PartsInventoryController {
         sku.setPartName(partName);
         sku.setQuantity(0);
         skuRepo.save(sku);
-        return "redirect:/parts";
+        return "redirect:/inventory";
     }
 
     @PostMapping("/delete-sku")
     public String deletePart(@RequestParam Integer partId) {
         skuRepo.deleteById(partId);
-        return "redirect:/parts";
+        return "redirect:/inventory";
     }
 }

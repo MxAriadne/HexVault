@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Table(name = "parts_individual")
 public class PartsIndividual {
     @Id
-    @ColumnDefault("nextval('parts_individual_id_seq')")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

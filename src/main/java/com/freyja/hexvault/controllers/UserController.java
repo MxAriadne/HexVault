@@ -1,6 +1,5 @@
 package com.freyja.hexvault.controllers;
 
-import com.freyja.hexvault.config.DBUserService;
 import com.freyja.hexvault.entities.User;
 import com.freyja.hexvault.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,14 +16,18 @@ public class UserController {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    private DBUserService userDetailsManager;
 
     @GetMapping("/login")
-    public String login(HttpServletRequest request, HttpSession session) {
+    public String login(HttpSession session) {
         session.setAttribute(
                 "error", "SPRING_SECURITY_LAST_EXCEPTION"
         );
-        return "/account/userLogin";
+        return "/login";
+    }
+
+    @GetMapping("/register")
+    public String register(HttpSession session) {
+        return "register";
     }
 
     @GetMapping("/account/logout")
@@ -32,15 +35,6 @@ public class UserController {
         HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter());
         http.logout((logout) -> logout.addLogoutHandler(clearSiteData));
         return "redirect:/";
-    }
-
-    @PostMapping("/account/create")
-    public @ResponseBody String create(@RequestParam String username, @RequestParam String password) {
-        User u = new User();
-        u.setUsername(username);
-        u.setPassword(passwordEncoder.encode(password));
-        userRepository.save(u);
-        return "Saved";
     }
 
 }

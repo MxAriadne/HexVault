@@ -1,11 +1,41 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Spellbreaker Inventory</title>
+  <title>HexVault - Adding Device</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-  <link rel="stylesheet" th:href="@{/assets/styles.css}">
+  <!--  Tailwind CSS  -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Sortable JS -->
+  <script src="https://cdn.jsdelivr.net/gh/tofsjonas/sortable@latest/dist/sortable.min.js"></script>
+
+  <!-- Import JS for jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.11/jquery.csv.min.js"></script>
+
+  <script>
+    // Tailwind Configuration for dark mode
+    tailwind.config = {
+      darkMode: 'class', // Enables class-based dark mode
+    };
+
+    // Preserve mode preference in localStorage
+    document.addEventListener("DOMContentLoaded", () => {
+      const htmlElement = document.documentElement;
+      const mode = localStorage.getItem("theme");
+
+      if (mode === "dark") {
+        htmlElement.classList.add("dark");
+      } else {
+        htmlElement.classList.remove("dark");
+      }
+    });
+  </script>
+
+  <link rel="stylesheet" th:href="@{/assets/style.css}">
+  <link rel="stylesheet" th:href="@{/assets/grid-form.css}">
 </head>
 
 <script>
@@ -21,11 +51,16 @@
     fetch(url)
             .then(response => response.json())
             .then(customers => {
-              const suggestionBox = document.getElementById(type + 'Suggestions');
+              const suggestionBox = document.getElementById('suggestions-box');
               suggestionBox.innerHTML = customers
                       .map(customer => `
-                        <li style="list-style-type: none; padding: 0; margin: 0" onclick="selectCustomer('${customer.email}', '${customer.phoneNumber}', '${customer.name}')">
-                            ${customer.name} - ${customer.phoneNumber}
+                        <li
+                            class="w-auto my-[10px] font-thin p-[4px] shadow-white outline-2 outline-offset-2 outline-primary-50 outline rounded-xl text-center align-middle inline-block xl:w-auto xl:my-[10px] xl:font-thin xl:p-[4px]"
+                            onclick="selectCustomer('${customer.email}', '${customer.phoneNumber}', '${customer.name}')"
+                            >
+                            ${customer.name}<br>
+                            ${customer.email}<br>
+                            ${customer.phoneNumber}
                         </li>`)
                       .join('');
               console.log("Fetched suggestions:", customers);
@@ -40,9 +75,10 @@
 
   function selectCustomer(email, phone, name) {
     // Autofill email and phone inputs
-    document.getElementById('customerEmailInput').value = email;
-    document.getElementById('customerPhoneInput').value = phone;
-    document.getElementById('customerNameInput').value = name;
+    document.getElementById('email').value = email;
+    document.getElementById('phone').value = phone;
+    document.getElementById('firstName').value = name.split(" ")[0];
+    document.getElementById('lastName').value = name.split(" ")[1];
 
     // Hide both suggestion boxes
     hideSuggestions('email');
@@ -50,72 +86,105 @@
   }
 
   function hideSuggestions(type) {
-    document.getElementById(type + 'Suggestions').style.display = 'none';
+    document.getElementById('suggestions-box').style.display = 'none';
   }
 
 </script>
 
-<body>
-<nav class="navbar is-transparent">
-  <div class="navbar-brand">
-    <a class="header-logo" href="/">
-      <img th:src="@{/assets/logo.png}" alt="Spellbreaker Logo" width="263" height="73.5">
-    </a>
+<body class="font-body antialiased dark:bg-gray-800">
+<div class="font-body antialiased">
+  <div class="w-auto h-auto place-items-center grid xl:w-auto xl:h-auto">
+    <div class="my-[100px] xl:my-[100px]">
+        <span class="w-[216px] h-[216px] xl:w-[216px] xl:h-[216px]">
+          <span class="text-current w-24px h-24px w-[inherit] h-[inherit] xl:text-current">
+            <svg
+                    class="w-[inherit] h-[inherit]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 16 16">
+              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"></path>
+              <path
+                      fill-rule="evenodd"
+                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"></path>
+            </svg>
+          </span>
+        </span>
+    </div>
+    <form
+            data-error="&amp;lt;p&amp;gt;Something went wrong. Please try again&amp;lt;/p&amp;gt;"
+            data-success="&amp;lt;p&amp;gt;Thank you for your submission.&amp;lt;/p&amp;gt;"
+            th:action="@{/add-device}" method="post"
+            class="grid grid-cols-3 gap-4">
+      <input
+              id="firstName"
+              name="firstName"
+              autocomplete="off"
+              required
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-1 p-2"
+              type="text"
+              placeholder="First Name" />
+      <input
+              id="lastName"
+              name="lastName"
+              autocomplete="off"
+              required
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-1 p-2"
+              type="text"
+              placeholder="Last Name" />
+      <input
+              id="deviceId"
+              name="deviceId"
+              autocomplete="off"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-1 p-2"
+              type="text"
+              placeholder="IMEI/Serial" />
+      <input
+              id="deviceName"
+              name="deviceName"
+              autocomplete="off"
+              required
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-1 p-2"
+              type="text"
+              placeholder="Device Name" />
+      <input
+              id="email"
+              name="email"
+              autocomplete="off"
+              required
+              oninput="updateSuggestions(this, 'email')"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-1 p-2"
+              type="text"
+              placeholder="Email" />
+      <input
+              id="phone"
+              name="phone"
+              autocomplete="off"
+              required
+              oninput="updateSuggestions(this, 'phone')"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-1 p-2"
+              type="text"
+              placeholder="Phone Number" />
+      <textarea
+              id="desc"
+              name="desc"
+              autocomplete="off"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 col-span-3 p-2"
+              placeholder="Description"></textarea>
+      <button
+              id="submit"
+              class="text-white bg-primary disabled:bg-gray-400 px-4 py-2 flex items-center gap-x-2 rounded-full col-start-2"
+              type="submit">
+        Submit
+      </button>
+    </form>
   </div>
-  <div id="navbar" class="navbar-menu">
-    <div class="navbar-start">
-      <a class="navbar-item" href="/purchase-orders"> Purchase Orders </a>
-      <a class="navbar-item" href="/parts"> Parts Inventory </a>
-    </div>
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="field is-grouped">
-          <p class="control">
-          <form th:action="@{/logout}" method="post">
-            <button type="submit" class="button is-danger" id="logout-button">
-              <span>Logout</span>
-            </button>
-          </form>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<div class="field">
-  <form th:action="@{/add-device}" method="post" style="width: 100%;">
-    <img th:src="@{/assets/customer.png}" style="height: 10%; width: 10%; display: block; margin: 40px auto;" alt="Customer">
-
-    <input class="input" type="text" name="deviceName" placeholder="Device Name">
-
-    <input class="input" type="text" name="deviceNum" placeholder="Device Identifier (IMEI/SN/ETC)">
-
-
-    <div class="columns is-centered">
-      <div class="column is-one-third">
-        <textarea class="textarea" name="deviceDescription" placeholder="Description"></textarea>
-      </div>
-    </div>
-
-    <input class="input" type="text" name="customerName" id="customerNameInput" placeholder="Customer Name">
-
-    <!-- Customer Email -->
-    <div class="autocomplete-wrapper">
-      <input class="input" type="text" id="customerEmailInput" name="customerEmail"
-             placeholder="Customer Email" oninput="updateSuggestions(this, 'email')" autocomplete="off" />
-      <div id="emailSuggestions" class="suggestion-box" style="display: none;"></div>
-    </div>
-
-    <!-- Customer Phone -->
-    <div class="autocomplete-wrapper">
-      <input class="input" type="text" id="customerPhoneInput" name="customerPhone"
-             placeholder="Customer Phone" oninput="updateSuggestions(this, 'phone')" autocomplete="off" />
-      <div id="phoneSuggestions" class="suggestion-box" style="display: none;"></div>
-    </div>
-
-    <button class="button is-primary deviceBtn" type="submit">Add Device</button>
-  </form>
+</div>
+<div class="flex place-content-center">
+  <ul class="w-[30%] my-[10px] text-center place-self-center xl:w-[30%] xl:my-[10px] list-none" id="suggestions-box">
+  </ul>
 </div>
 </body>
+
 </html>

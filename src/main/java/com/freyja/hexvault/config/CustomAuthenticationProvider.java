@@ -1,7 +1,6 @@
 package com.freyja.hexvault.config;
 
 import com.freyja.hexvault.entities.User;
-import com.freyja.hexvault.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,14 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    private DBUserService userDetailsService;
+    @Autowired private DBUserService userDetailsService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -33,8 +27,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         // Check password
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            System.out.println(user.getUsername());
-            System.out.println(user.getPassword());
             throw new BadCredentialsException("Invalid username or password");
         }
 

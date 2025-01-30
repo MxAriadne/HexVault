@@ -1,9 +1,6 @@
 package com.freyja.hexvault.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,7 +16,7 @@ import java.util.List;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @ColumnDefault("nextval('users_id_seq')")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -34,6 +31,9 @@ public class User implements UserDetails {
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

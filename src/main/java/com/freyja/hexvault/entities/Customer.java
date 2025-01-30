@@ -1,9 +1,6 @@
 package com.freyja.hexvault.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -14,7 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "customers")
 public class Customer {
     @Id
-    @ColumnDefault("nextval('customers_id_seq')")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

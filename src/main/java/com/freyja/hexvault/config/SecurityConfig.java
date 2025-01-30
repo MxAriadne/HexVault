@@ -19,23 +19,18 @@ import javax.sql.DataSource;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    private final UserRepository userRepository;
+    @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private DataSource dataSource;
-
-    public SecurityConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired private DataSource dataSource;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/assets/**", "/account/login/**", "/autocomplete", "/view-po/**", "/devices").permitAll() // Allow public access to these paths
-                        .requestMatchers(HttpMethod.POST, "/login", "/autocomplete", "/add-part-po", "/create-po", "/delete-po", "/devices").permitAll()
+                        .requestMatchers("/assets/**", "/login/**", "/autocomplete", "/register").permitAll() // Allow public access to these paths
+                        .requestMatchers(HttpMethod.POST, "/login", "/autocomplete", "/api/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/register/approve", "/add-device").authenticated()
                         .anyRequest().authenticated() // Secure all other requests
                 )
                 .formLogin(form -> form
