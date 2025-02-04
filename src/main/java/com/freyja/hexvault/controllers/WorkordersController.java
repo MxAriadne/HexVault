@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-public class HomeController {
+public class WorkordersController {
 
     @Autowired private DeviceRepository deviceRepo;
 
