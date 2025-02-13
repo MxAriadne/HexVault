@@ -8,6 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <title>500 - HexVault</title>
 </head>
+
+<script>
+    // Tailwind Configuration for dark mode
+    tailwind.config = {
+        darkMode: 'class', // Enables class-based dark mode
+    };
+</script>
+
 <body class="font-body antialiased">
 <section>
     <div class="container mx-auto flex min-h-screen items-center px-6 py-12">
@@ -47,12 +55,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"></path>
               </svg>
             </span>
-                    <span>Go back</span>
+                    <span th:href="@{'/'}">Go back</span>
                 </button>
                 <button
                         class="bg-primary-500 hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-500 w-1/2 shrink-0 rounded-lg px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 sm:w-auto"
                         type="button">
-                    <span>Take me home</span>
+                    <span th:href="@{'/'}">Take me home</span>
                 </button>
             </div>
         </div>

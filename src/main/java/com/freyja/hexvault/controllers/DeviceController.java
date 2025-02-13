@@ -73,12 +73,12 @@ public class DeviceController {
         note.setCreatedBy(u);
         notesRepo.save(note);
 
-        return "redirect:/devices/" + id;
+        return "redirect:/devices/view/" + id;
     }
 
     @PostMapping("/delete-note/{id}")
     public String deleteNote(@PathVariable Integer id, Integer deviceId) {
         notesRepo.deleteById(id);
-        return "redirect:/devices/" + deviceId;
+        return "redirect:/devices/view/" + deviceId;
     }
 }
