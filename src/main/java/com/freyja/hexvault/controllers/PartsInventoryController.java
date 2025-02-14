@@ -22,9 +22,10 @@ public class PartsInventoryController {
     }
 
     @PostMapping("/create-part")
-    public String createPart(@RequestParam String partName) {
+    public String createPart(@RequestParam String partName, String limited) {
         PartsSku sku = new PartsSku();
         sku.setPartName(partName);
+        sku.setIsService(!limited.equals("Is this a service?"));
         sku.setQuantity(0);
         skuRepo.save(sku);
         return "redirect:/inventory";

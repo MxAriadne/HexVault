@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase Orders - Spellbreaker Inventory</title>
+    <title>Purchasing - HexVault</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -279,7 +279,7 @@
 <div class="w-auto h-auto p-4 sm:ml-64 xl:w-auto xl:h-auto xl:p-[12px]">
     <h1 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Purchase Orders</h1>
 
-    <form method="post" action="/create-po" class="mb-6">
+    <form method="post" th:action="@{'/create-po'}" class="mb-6">
         <div class="grid grid-cols-3 gap-4">
             <input type="text" name="retailer" placeholder="Supplier" required
                    class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
@@ -321,7 +321,7 @@
             <tbody>
             <tr th:each="po : ${purchaseOrders}"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td class="px-4 py-2 text-center">
+                <td class="text-center">
                     <a th:if="${po.getStatus() == 'Not finalized'}"
                        class="text-blue-500 dark:text-blue-400 hover:underline"
                        th:href="@{/po-details/{id}(id=${po.getId()})}"
@@ -329,24 +329,24 @@
                     <span th:if="${po.getStatus() == 'Finalized'}" class="text-gray-900 dark:text-gray-100"
                           th:text="${po.getId()}"></span>
                 </td>
-                <td class="px-6 py-4" style="white-space: pre-wrap;">
+                <td class="text-center" style="white-space: pre-wrap;">
                     <span th:text="${po.getStatus()}"></span>
                 </td>
-                <td class="px-6 py-4" style="white-space: pre-wrap;">
+                <td class="text-center" style="white-space: pre-wrap;">
                     <span th:text="${po.getRetailer()}"></span>
                 </td>
-                <td class="px-6 py-4" style="white-space: pre-wrap;">
+                <td class="text-center" style="white-space: pre-wrap;">
                     <span th:text="${po.getTimestamp()}"></span>
                 </td>
-                <td class="px-6 py-4" style="white-space: pre-wrap;">
+                <td class="text-center" style="white-space: pre-wrap;">
                     <span th:text="${po.getTotalPrice()}"></span>
                 </td>
-                <td class="px-6 py-4" style="white-space: pre-wrap;">
+                <td class="text-center" style="white-space: pre-wrap;">
                     <span th:text="${po.getOrderNo()}"></span>
                 </td>
-                <td class="flex">
-                    <form method="post" th:action="@{'/delete-po/' + ${po.getId()}}">
-                        <input type="hidden" name="poId" th:value="${po.getId()}">
+                <td class="px-4 py-2 flex items-center justify-center">
+                    <form class="px-4 py-2 flex items-center" method="post" th:action="@{'/delete-po/' + ${po.getId()}}">
+                        <input class="hidden" type="hidden" name="poId" th:value="${po.getId()}">
                         <button type="submit" class="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600">
                             Delete
                         </button>

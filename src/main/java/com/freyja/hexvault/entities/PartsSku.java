@@ -21,4 +21,7 @@ public class PartsSku {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "is_service")
+    private Boolean isService;
+
 }

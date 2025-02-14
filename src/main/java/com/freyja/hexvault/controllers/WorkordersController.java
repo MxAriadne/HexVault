@@ -23,7 +23,7 @@ public class WorkordersController {
     @Autowired private SKURepository skuRepo;
 
     @GetMapping({"/", "/dashboard"})
-    public String dashboard(Model model) {
+    public String dashboard() {
         return "dashboard";
     }
 

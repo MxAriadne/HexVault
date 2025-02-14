@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/assets/**", "/login/**", "/autocomplete", "/register").permitAll() // Allow public access to these paths
                         .requestMatchers(HttpMethod.POST, "/login", "/autocomplete", "/api/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/register/approve", "/add-device").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/register/approve", "/add-device", "/create-po").authenticated()
                         .anyRequest().authenticated() // Secure all other requests
                 )
                 .formLogin(form -> form

@@ -18,21 +18,18 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class PurchaseOrderController {
 
-    @Autowired
-    private PurchaseOrderRepository purchaseOrderRepo;
+    @Autowired private PurchaseOrderRepository purchaseOrderRepo;
 
-    @Autowired
-    private POItemRepository poItemRepo;
+    @Autowired private POItemRepository poItemRepo;
 
-    @Autowired
-    private SKURepository skuRepo;
+    @Autowired private SKURepository skuRepo;
 
-    @Autowired
-    private PartsRepository partsRepo;
+    @Autowired private PartsRepository partsRepo;
 
     @GetMapping("/purchasing")
     public String purchaseOrder(Model model) {
@@ -48,7 +45,12 @@ public class PurchaseOrderController {
 
     @GetMapping("/po-details/{poId}")
     public String createPurchaseOrder(Model model, @PathVariable(required = false) Integer poId) {
-        PurchaseOrder po = purchaseOrderRepo.findById(poId).get();
+        Optional<PurchaseOrder> temp = purchaseOrderRepo.findById(poId);
+        PurchaseOrder po = null;
+
+        if (temp.isPresent()) {
+            po = temp.get();
+        }
 
         model.addAttribute("po", po);
         model.addAttribute("parts", poItemRepo.findAllByPoId(poId));
@@ -66,7 +68,7 @@ public class PurchaseOrderController {
         po.setTotalPrice(BigDecimal.valueOf(0.00));
         purchaseOrderRepo.save(po);
 
-        return "redirect:/purchase-orders";
+        return "redirect:/purchasing";
     }
 
     @PostMapping("/add-part-po")
@@ -85,7 +87,7 @@ public class PurchaseOrderController {
     @PostMapping("/delete-po/{poId}")
     public String deletePO(@PathVariable(required = false) Integer poId) {
         purchaseOrderRepo.deleteById(poId);
-        return "redirect:/purchase-orders";
+        return "redirect:/purchasing";
     }
 
     @PostMapping("/remove-part/")
@@ -112,7 +114,7 @@ public class PurchaseOrderController {
         }
         purchaseOrderRepo.save(po);
 
-        return "redirect:/purchase-orders";
+        return "redirect:/purchasing";
     }
 
 }
