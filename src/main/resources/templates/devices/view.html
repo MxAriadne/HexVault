@@ -361,7 +361,7 @@
                             <td>
                                 <div class="field">
                                     <div class="control">
-                                        <textarea class="textarea" rows="4" placeholder="Add a note" id="noteText" name="noteText"></textarea>
+                                        <textarea class="textarea" rows="4" placeholder="Add a note" id="noteText" name="noteText" style="border: none;"></textarea>
                                     </div>
                                 </div>
                             </td>
@@ -376,11 +376,9 @@
                         </form>
                     </tr>
                     <tr th:each="note : ${notes}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td class="px-6 py-4" style="white-space: pre-wrap;"><span th:text="${note.getNote()}"></span></td>
                         <td class="px-6 py-4" style="white-space: pre-wrap;">
-                            <span th:text="${note.getNote()}"></span>
-                        </td>
-                        <td class="px-6 py-4" style="white-space: pre-wrap;">
-                            <span th:text="${note.getNote()}"></span>
+                            <span th:text="${note.getTimestamp()}"></span>
                         </td>
                         <td class="px-6 py-4">
                             <form method="post" th:action="@{'/delete-note/' + ${note.getId()}}">

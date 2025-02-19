@@ -48,15 +48,15 @@ public class DeviceController {
             Device device = deviceRepo.findById(id).get();
 
             if (part.getDevice() != null) {
-                return "redirect:/devices/" + id + "?part-use-error=true";
+                return "redirect:/view/" + id + "?part-use-error=true";
             } else {
                 part.setDevice(device);
                 partRepo.save(part);
-                return "redirect:/devices/" + id;
+                return "redirect:/view/" + id;
             }
 
         } catch (Exception e) {
-            return "redirect:/devices/" + id + "?part-mismatch-error=true";
+            return "redirect:/view/" + id + "?part-mismatch-error=true";
         }
 
 
@@ -73,12 +73,12 @@ public class DeviceController {
         note.setCreatedBy(u);
         notesRepo.save(note);
 
-        return "redirect:/devices/view/" + id;
+        return "redirect:/view/" + id;
     }
 
     @PostMapping("/delete-note/{id}")
     public String deleteNote(@PathVariable Integer id, Integer deviceId) {
         notesRepo.deleteById(id);
-        return "redirect:/devices/view/" + deviceId;
+        return "redirect:/view/" + deviceId;
     }
 }
