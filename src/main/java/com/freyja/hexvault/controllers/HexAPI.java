@@ -1,88 +1,28 @@
 package com.freyja.hexvault.controllers;
 
-import com.freyja.hexvault.entities.*;
-import com.freyja.hexvault.repos.*;
-import jakarta.servlet.http.HttpServletResponse;
+import com.freyja.hexvault.entities.Customer;
+import com.freyja.hexvault.entities.PartsIndividual;
+import com.freyja.hexvault.entities.PartsSku;
+import com.freyja.hexvault.repos.CustomerRepository;
+import com.freyja.hexvault.repos.PartsRepository;
+import com.freyja.hexvault.repos.SKURepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class HexAPI {
 
-    @Autowired private UserRepository userRepository;
-
-    @Autowired private PasswordEncoder passwordEncoder;
-
     @Autowired private CustomerRepository customerRepo;
-
-    @Autowired private DeviceRepository deviceRepo;
-
+    @Autowired private PartsRepository partsRepo;
     @Autowired private SKURepository skuRepo;
 
-    @Autowired private PartsRepository partsRepo;
-
-    @PostMapping("/api")
-    public String api() {
-        return "This is a test endpoint.";
-    }
-
-    @PostMapping("/api/register")
-    public String requestAccount() {
-
-        // TODO: Make a new table on the database for notifications and send one to admins for them to approve, this would forward to api/register/approve
-
-        return "redirect:/";
-    }
-
-    @PostMapping("/api/register/approve")
-    public String register(@RequestParam String username, @RequestParam String password, @RequestParam String email, @RequestParam String firstName, @RequestParam String lastName) {
-        User u = new User();
-        u.setUsername(username);
-        u.setEmail(email);
-        u.setFirstName(firstName);
-        u.setLastName(lastName);
-        u.setPassword(passwordEncoder.encode(password));
-        userRepository.save(u);
-        return "redirect:/";
-    }
-
-    @PostMapping("/add-device")
-    public String addDevice(HttpServletResponse httpResponse, @RequestParam String deviceName, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String desc, @RequestParam String deviceId, @RequestParam String email, @RequestParam String phone) throws IOException {
-        Customer c = null;
-
-        Collection<Customer> customers = (Collection<Customer>) customerRepo.findAll();
-        if (customers.stream().noneMatch(customer -> customer.getEmail().equals(email))) {
-            c = new Customer();
-            c.setCustomerName(firstName + " " + lastName);
-            c.setEmail(email);
-            c.setPhoneNumber(phone);
-            customerRepo.save(c);
-        } else {
-            Optional<Customer> temp = customers.stream().filter(customer1 -> customer1.getEmail().equals(email)).findFirst();
-            if (temp.isPresent()) {
-                c = temp.get();
-            }
-        }
-
-        Device device = new Device();
-        device.setDeviceName(deviceName);
-        device.setCustomer(c);
-        device.setDescription(desc);
-        device.setDeviceNum(deviceId);
-        device.setStatus("Awaiting Repair");
-        device.setTimestamp(Instant.now());
-        deviceRepo.save(device);
-
-        httpResponse.sendRedirect("/devices");
-        return null;
-    }
-
-    @GetMapping("/autocomplete")
+    @GetMapping("/api/autocomplete")
     public List<Map<String, String>> autocomplete(@RequestParam String query, @RequestParam String type) {
 
         switch (type) {
@@ -120,6 +60,7 @@ public class HexAPI {
                         .toList();
             }
             case null, default -> {
+                System.out.println("Invalid type: " + type + "or no type provided.");
                 return Collections.emptyList();
             }
         }

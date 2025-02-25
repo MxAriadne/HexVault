@@ -5,9 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 @Getter
 @Setter
@@ -34,9 +35,15 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "roles")
+    private String roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        Arrays.stream(this.roles.replace("{", "").replace("}", "").split(",")).forEach(System.out::println);
+        return Arrays.stream(this.roles.replace("{", "").replace("}", "").split(","))
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
 
     @Override

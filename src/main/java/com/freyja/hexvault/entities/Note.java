@@ -22,6 +22,9 @@ public class Note {
     @Column(name = "note", nullable = false, length = Integer.MAX_VALUE)
     private String note;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "\"timestamp\"", nullable = false)
     private Instant timestamp;

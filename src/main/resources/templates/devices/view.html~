@@ -369,7 +369,7 @@
                                 </div>
                             </td>
                             <td>
-                                <select id="status" name="status">
+                                <select id="status">
                                     <option value="Awaiting Repair">Awaiting Repair</option>
                                     <option value="In Progress">In Progress</option>
                                     <option value="Complete">Complete</option>

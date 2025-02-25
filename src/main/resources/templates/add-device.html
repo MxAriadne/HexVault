@@ -47,7 +47,7 @@
       return;
     }
 
-    const url = `/autocomplete?query=${query}&type=${type}`;
+    const url = `/api/autocomplete?query=${query}&type=${type}`;
     fetch(url)
             .then(response => response.json())
             .then(customers => {
