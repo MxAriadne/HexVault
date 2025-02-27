@@ -48,10 +48,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     // Instantiate the user details service
-    private DBUserService userDetailsService;
+    @Autowired private DBUserService userDetailsService;
 
     // Instantiate the password encoder
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = passwordEncoder();
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

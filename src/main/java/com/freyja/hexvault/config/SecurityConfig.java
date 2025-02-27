@@ -20,9 +20,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/assets/**", "/login/**", "/api/autocomplete", "/register").permitAll() // Allow public access to these paths
                         .requestMatchers(HttpMethod.POST, "/login", "/api/autocomplete", "/api/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/register/approve", "/add-device", "/create-po").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/register/approve", "/add-device", "/create-po", "/delete-note/", "/add-note/", "/add-part/").authenticated()
                         .requestMatchers("/", "/devices").hasAnyAuthority("user", "admin")
-                        .anyRequest().authenticated() // Secure all other requests
+                        .anyRequest().authenticated() // Secure all other requestss
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Custom login page URL

@@ -289,44 +289,46 @@
         <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
         <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
     </div>
-    <form method="post" th:action="@{'/create-part'}" class="mb-6 grid grid-cols-3 gap-4">
-        <input type="text" name="partName" placeholder="Part Name" required autocomplete="off"
-               class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
-        <div class="flex items-center w-max gap-x-2">
-            <input name="limited" id="limited" type="checkbox" />
-            <label for="limited">Is this a service?</label>
-        </div>
+    <div class="p-2">
+        <form method="post" th:action="@{'/create-part'}" class="mb-6 grid grid-cols-3 gap-4">
+            <input type="text" name="partName" placeholder="Part Name" required autocomplete="off"
+                   class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
+            <div class="flex items-center w-max gap-x-2">
+                <input name="limited" id="limited" type="checkbox" />
+                <label for="limited">Is this a service?</label>
+            </div>
 
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Create Inventory Item</button>
-    </form>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="sortable w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th class="px-6 py-3">SKU</th>
-                <th class="px-6 py-3">Part Name</th>
-                <th class="px-6 py-3">Type</th>
-                <th class="px-6 py-3">Quantity</th>
-                <th class="px-6 py-3">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="part : ${parts}" class="bg-white border-b dark:bg-gray-800">
-                <td class="px-6 py-4" th:text="${part.getId()}"></td>
-                <td class="px-6 py-4" th:text="${part.getPartName()}"></td>
-                <td class="px-6 py-4" th:if="${part.getIsService()}" th:text="'Service'"></td>
-                <td class="px-6 py-4" th:if="${!part.getIsService()}" th:text="'Limited'"></td>
-                <td class="px-6 py-4" th:if="${part.getIsService()}" th:text="'N/A'"></td>
-                <td class="px-6 py-4" th:if="${!part.getIsService()}" th:text="${part.getQuantity()}"></td>
-                <td class="px-6 py-4">
-                    <form method="post" th:action="@{'/delete-sku'}">
-                        <input type="hidden" name="partId" th:value="${part.getId()}">
-                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Create Inventory Item</button>
+        </form>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="sortable w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th class="px-6 py-3">SKU</th>
+                    <th class="px-6 py-3">Part Name</th>
+                    <th class="px-6 py-3">Type</th>
+                    <th class="px-6 py-3">Quantity</th>
+                    <th class="px-6 py-3">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="part : ${parts}" class="bg-white border-b dark:bg-gray-800">
+                    <td class="px-6 py-4" th:text="${part.getId()}"></td>
+                    <td class="px-6 py-4" th:text="${part.getPartName()}"></td>
+                    <td class="px-6 py-4" th:if="${part.getIsService()}" th:text="'Service'"></td>
+                    <td class="px-6 py-4" th:if="${!part.getIsService()}" th:text="'Limited'"></td>
+                    <td class="px-6 py-4" th:if="${part.getIsService()}" th:text="'N/A'"></td>
+                    <td class="px-6 py-4" th:if="${!part.getIsService()}" th:text="${part.getQuantity()}"></td>
+                    <td class="px-6 py-4">
+                        <form method="post" th:action="@{'/delete-sku'}">
+                            <input type="hidden" name="partId" th:value="${part.getId()}">
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>
