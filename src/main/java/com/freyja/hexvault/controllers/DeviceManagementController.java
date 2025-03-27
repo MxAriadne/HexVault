@@ -43,17 +43,41 @@ public class DeviceManagementController {
     @PostMapping("/add-part/{id}")
     public String addPart(@PathVariable Integer id, @RequestParam String partInput) {
         try {
-            PartsSku sku = skuRepo.findById(Integer.valueOf(partInput)).get();
+            Optional<PartsSku> optionalSku = skuRepo.findById(Integer.valueOf(partInput));
+            if (optionalSku.isEmpty()) {
+                return "redirect:/view/" + id + "?part-not-found=true";
+            }
+            PartsSku sku = optionalSku.get();
+
+            Optional<Device> optionalDevice = deviceRepo.findById(id);
+            if (optionalDevice.isEmpty()) {
+                return "redirect:/view/" + id + "?device-not-found=true";
+            }
+            Device device = optionalDevice.get();
+
             if (Boolean.TRUE.equals(sku.getIsService())) {
                 PartsIndividual p = new PartsIndividual();
-                p.setDevice(deviceRepo.findById(id).get());
+                p.setDevice(device);
                 p.setPartSku(sku);
                 p.setPrice(BigDecimal.ZERO);
                 partRepo.save(p);
                 return "redirect:/view/" + id;
             } else {
-                PartsIndividual p = partRepo.findById(Integer.valueOf(partInput)).get();
-                p.setDevice(deviceRepo.findById(id).get());
+                Collection<PartsIndividual> possibleParts = partRepo.findByPartSku(sku);
+                for (PartsIndividual part : possibleParts) {
+                    if (part.getDevice() == null) {
+                        part.setDevice(device);
+                        partRepo.save(part);  // Save the updated part
+                        return "redirect:/view/" + id;
+                    } else if (part.getDevice().getId().equals(id)) {
+                        return "redirect:/view/" + id + "?part-already-exists=true";
+                    }
+                }
+
+                // If no existing part was updated, create a new one
+                PartsIndividual p = new PartsIndividual();
+                p.setPartSku(sku);
+                p.setDevice(device);
                 partRepo.save(p);
                 return "redirect:/view/" + id;
             }
@@ -79,6 +103,14 @@ public class DeviceManagementController {
 
         d.setStatus(status);
         deviceRepo.save(d);
+
+        if (status.equals("Complete")) {
+            Collection<PartsIndividual> parts = partRepo.findAllByDevice(d);
+            for (PartsIndividual part : parts) {
+                part.setStatus("Sold");
+                part.getPartSku().setQuantity(part.getPartSku().getQuantity() - 1);
+            }
+        }
 
         return "redirect:/view/" + id;
     }

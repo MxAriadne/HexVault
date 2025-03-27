@@ -28,9 +28,12 @@ public class InventoryManagementController {
 
     @PostMapping("/create-part")
     public String createPart(@RequestParam String partName, String limited) {
+        if (limited == null) {
+            limited = "";
+        }
         PartsSku sku = new PartsSku();
         sku.setPartName(partName);
-        sku.setIsService(!limited.equals("Is this a service?"));
+        sku.setIsService(limited.equals("Is this a service?"));
         sku.setQuantity(0);
         skuRepo.save(sku);
         return "redirect:/inventory";
@@ -88,7 +91,6 @@ public class InventoryManagementController {
         PoItem poItem = new PoItem();
         poItem.setPo(purchaseOrderRepo.findById(poId).get());
         poItem.setPartSku(skuRepo.findById(Integer.valueOf(partNumber)).get());
-        poItem.getPartSku().setPartName(partName);
         poItem.setQuantity(Integer.valueOf(quantity));
         poItem.setPrice(BigDecimal.valueOf(price));
         poItemRepo.save(poItem);
@@ -107,7 +109,7 @@ public class InventoryManagementController {
         return "redirect:/po-details/" + poId;
     }
 
-    @PostMapping("/finalize-po/{poId}")
+    @GetMapping("/finalize-po/{poId}")
     public String finalizePO(@PathVariable(required = false) Integer poId) {
         PurchaseOrder po = purchaseOrderRepo.findById(poId).get();
         po.setStatus("Finalized");
@@ -115,11 +117,13 @@ public class InventoryManagementController {
 
         List<PoItem> parts = poItemRepo.findAllByPoId(poId);
         for (PoItem part : parts) {
-            PartsIndividual partsIndividual = new PartsIndividual();
-            partsIndividual.setPartSku(part.getPartSku());
-            partsIndividual.getPartSku().setQuantity(part.getQuantity() + partsIndividual.getPartSku().getQuantity());
-            partsIndividual.setPrice(part.getPrice());
-            partsRepo.save(partsIndividual);
+            for (int i = 0; i < part.getQuantity(); i++) {
+                PartsIndividual partsIndividual = new PartsIndividual();
+                partsIndividual.setPartSku(part.getPartSku());
+                partsIndividual.getPartSku().setQuantity(part.getQuantity() + partsIndividual.getPartSku().getQuantity());
+                partsIndividual.setPrice(part.getPrice());
+                partsRepo.save(partsIndividual);
+            }
 
             po.setTotalPrice(BigDecimal.valueOf(po.getTotalPrice().doubleValue() + (part.getPrice().doubleValue() * part.getQuantity())));
         }

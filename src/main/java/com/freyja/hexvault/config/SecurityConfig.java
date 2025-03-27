@@ -22,7 +22,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/login", "/api/autocomplete", "/api/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/register/approve", "/add-device", "/create-po", "/delete-note/", "/add-note/", "/add-part/").authenticated()
                         .requestMatchers("/", "/devices").hasAnyAuthority("user", "admin")
-                        .anyRequest().authenticated() // Secure all other requestss
+                        .anyRequest().authenticated() // Secure all other requests
                 )
                 .formLogin(form -> form
                         .loginPage("/login") // Custom login page URL

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Purchase Order - HexVault</title>
+    <title>Inventory - HexVault</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +15,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.11/jquery.csv.min.js"></script>
 
     <link rel="stylesheet" th:href="@{/assets/styles.css}">
-
 </head>
 <script>
     // Tailwind Configuration for dark mode
@@ -285,77 +284,45 @@
           </svg>
         </span>
       </span>
-        <a class="text-gray-600 hover:underline dark:text-current" href="#" target="_self">Purchasing</a>
+        <a class="text-gray-600 hover:underline dark:text-current" href="#" target="_self">Inventory</a>
+        <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
+        <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
+        <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
     </div>
-
     <div class="p-2">
-        <form method="post" th:action="@{'/add-part-po'}" class="mb-6">
-            <div class="grid grid-cols-3 gap-4">
-                <input type="text" name="partNumber" placeholder="Part Number" required
-                       class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
-                <input type="text" name="partName" placeholder="Part Name"
-                       class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
-                <input type="text" name="quantity" placeholder="Quantity" required
-                       class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
-                <input type="text" name="price" placeholder="Price" required
-                       class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
-
-                <input class="hidden" type="hidden" name="poId" th:value="${po.getId()}">
-
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                    Add Items
-                </button>
-
-                 <button type="button" th:onclick="|window.location.href='/finalize-po/${po.getId()}'|" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                     Finalize
-                 </button>
+        <form method="post" th:action="@{'/create-part'}" class="mb-6 grid grid-cols-3 gap-4">
+            <input type="text" name="partName" placeholder="Part Name" required autocomplete="off"
+                   class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg">
+            <div class="flex items-center w-max gap-x-2">
+                <input name="limited" id="limited" type="checkbox" />
+                <label for="limited">Is this a service?</label>
             </div>
 
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Create Inventory Item</button>
         </form>
-
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="sortable w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="px-6 py-3">
-                        Part Number
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Part Name
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Quantity
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Price
-                    </th>
-                    <th scope="col" class="px-6 py-3">
-                        Actions
-                    </th>
+                    <th class="px-6 py-3">SKU</th>
+                    <th class="px-6 py-3">Part Name</th>
+                    <th class="px-6 py-3">Type</th>
+                    <th class="px-6 py-3">Quantity</th>
+                    <th class="px-6 py-3">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="part : ${parts}"
-                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td class="text-center" style="white-space: pre-wrap;">
-                        <span th:text="${part.getPartSku().getId()}"></span>
-                    </td>
-                    <td class="text-center" style="white-space: pre-wrap;">
-                        <span th:text="${part.getPartSku().getPartName()}"></span>
-                    </td>
-                    <td class="text-center" style="white-space: pre-wrap;">
-                        <span th:text="${part.getQuantity()}"></span>
-                    </td>
-                    <td class="text-center" style="white-space: pre-wrap;">
-                        <span th:text="${part.getPrice() * part.getQuantity()}"></span>
-                    </td>
-                    <td class="px-4 py-2 flex items-center justify-center">
-                        <form class="px-4 py-2 flex items-center" method="post" th:action="@{'/remove-part/'}">
-                            <input class="hidden" type="hidden" name="poId" th:value="${po.getId()}">
-                            <input class="hidden" type="hidden" name="partId" th:value="${part.getId()}">
-                            <button type="submit" class="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600">
-                                Delete
-                            </button>
+                <tr th:each="part : ${parts}" class="bg-white border-b dark:bg-gray-800">
+                    <td class="px-6 py-4" th:text="${part.getId()}"></td>
+                    <td class="px-6 py-4" th:text="${part.getPartName()}"></td>
+                    <td class="px-6 py-4" th:if="${part.getIsService()}" th:text="'Service'"></td>
+                    <td class="px-6 py-4" th:if="${!part.getIsService()}" th:text="'Limited'"></td>
+                    <td class="px-6 py-4" th:if="${part.getIsService()}" th:text="'N/A'"></td>
+                    <td class="px-6 py-4" th:if="${!part.getIsService()}" th:text="${part.getQuantity()}"></td>
+                    <td class="px-6 py-4">
+                        <form method="post" th:action="@{'/delete-sku'}">
+                            <input type="hidden" name="partId" th:value="${part.getId()}">
+                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600">Delete</button>
                         </form>
                     </td>
                 </tr>
