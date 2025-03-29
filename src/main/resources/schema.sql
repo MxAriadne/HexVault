@@ -12,6 +12,15 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE audit (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    action_taken VARCHAR(255) NOT NULL,
+    CONSTRAINT unique_action_taken UNIQUE (action_taken),
+    CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+);
+
+
 CREATE TABLE customers (
                            id INT PRIMARY KEY AUTO_INCREMENT,
                            customer_name VARCHAR(255) NOT NULL,

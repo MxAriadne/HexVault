@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
@@ -54,7 +54,7 @@
             }
         }
     </script>
-    <title>HexVault - Dashboard</title>
+    <title>Audit Log - HexVault</title>
 </head>
 
 <body class="font-body antialiased">
@@ -199,28 +199,6 @@
                     <span class="flex-1 ms-3 whitespace-nowrap">Sign Up</span>
                 </a>
             </li>
-            <li sec:authorize="hasAuthority('admin')">
-                <a
-                        href="/audit"
-                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-            <span
-                    class="w-24px h-24px shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-              <svg
-                      class="w-[inherit] h-[inherit]"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20">
-                <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z"></path>
-                <path
-                        d="M6.737 11.061a2.961 2.961 0 0 1 .81-1.515l6.117-6.116A4.839 4.839 0 0 1 16 2.141V2a1.97 1.97 0 0 0-1.933-2H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18v-3.093l-1.546 1.546c-.413.413-.94.695-1.513.81l-3.4.679a2.947 2.947 0 0 1-1.85-.227 2.96 2.96 0 0 1-1.635-3.257l.681-3.397Z"></path>
-                <path
-                        d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"></path>
-              </svg>
-            </span>
-                    <span class="flex-1 ms-3 whitespace-nowrap">Audit Log</span>
-                </a>
-            </li>
             <li>
         <span class="place-content-center">
           <button
@@ -308,83 +286,35 @@
           </svg>
         </span>
       </span>
-        <a class="text-gray-600 hover:underline dark:text-current" href="#" target="_self">Dashboard</a>
+        <a class="text-gray-600 hover:underline dark:text-current" href="#" target="_self">Audit Log</a>
         <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
         <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
         <span class="mx-5 text-gray-500 rtl:-scale-x-100 dark:text-gray-300"></span>
     </div>
 </div>
-<section class="ml-[256px] xl:ml-[256px]">
-    <div class="container mx-auto px-6 py-10">
-        <div class="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:mt-12 xl:gap-12">
-            <div class="w-full">
-                <div class="bg-white rounded-lg shadow-gray-200">
-                    <div class="px-6 py-5 border-b border-gray-100">
-                        <h1 class="text-center font-medium text-gray-700 xl:text-center">Workorders By Status</h1>
-                    </div>
-                    <div class="h-auto w-auto flex items-center p-8 xl:h-auto xl:w-auto">
-                        <noscript>
-                            Canvas
-                            <!-- -->
-                            not found
-                        </noscript>
-                    </div>
-                </div>
-            </div>
-            <div class="w-full">
-                <div class="bg-white rounded-lg">
-                    <div class="px-6 py-5 border-b border-gray-100">
-                        <h1 class="text-center font-medium text-gray-700 xl:text-center">Parts By Status</h1>
-                    </div>
-                    <div class="h-auto w-auto flex items-center p-8 xl:h-auto xl:w-auto">
-                        <noscript>
-                            Canvas
-                            <!-- -->
-                            not found
-                        </noscript>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 <div class="ml-[256px] grid-cols-1 flex xl:ml-[256px]">
-    <div class="mr-[50px] flex items-center gap-x-2 w-full place-content-center xl:mr-[50px]">
-      <span class="text-black h-16 w-16 rounded-full outline-primary-50 dark:text-current xl:w-[64px] xl:h-[64px]">
-        <svg
-                class="w-[inherit] h-[inherit]"
-                xmlns="http://www.w3.org/2000/svg"
-                stroke="currentColor"
-                fill="currentColor"
-                stroke-width="0"
-                viewBox="0 0 496 512">
-          <path
-                  d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 96c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm0 344c-58.7 0-111.3-26.6-146.5-68.2 18.8-35.4 55.6-59.8 98.5-59.8 2.4 0 4.8.4 7.1 1.1 13 4.2 26.6 6.9 40.9 6.9 14.3 0 28-2.7 40.9-6.9 2.3-.7 4.7-1.1 7.1-1.1 42.9 0 79.7 24.4 98.5 59.8C359.3 421.4 306.7 448 248 448z" />
-        </svg>
-      </span>
-        <div>
-            <h2 class="text-xl font-semibold capitalize text-gray-700 dark:text-current"><span th:text="${numUsers}"></span></h2>
-            <p class="text-base text-gray-500 dark:text-gray-400">Users</p>
+
+    <div class="p-2">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="sortable w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th class="px-6 py-3">Username</th>
+                    <th class="px-6 py-3">Action Taken</th>
+                    <th class="px-6 py-3">Timestamp</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="audit : ${audits}" class="bg-white border-b dark:bg-gray-800">
+                    <td class="px-6 py-4" th:text="${audit.getUsername()}"></td>
+                    <td class="px-6 py-4" th:text="${audit.getActionTaken()}"></td>
+                    <td class="px-6 py-4" th:text="${audit.getTimestamp()}"></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="flex items-center gap-x-2 w-full place-content-center">
-      <span class="text-black h-16 w-16 rounded-full outline-primary-50 dark:text-current xl:w-[64px] xl:h-[64px]">
-        <svg
-                class="w-[inherit] h-[inherit]"
-                xmlns="http://www.w3.org/2000/svg"
-                stroke="currentColor"
-                fill="currentColor"
-                stroke-width="0"
-                viewBox="0 0 16 16">
-          <path
-                  d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5z" />
-        </svg>
-      </span>
-        <div>
-            <h2 class="text-xl font-semibold capitalize text-gray-700 dark:text-current"><span th:text="${numComplete}"></span></h2>
-            <p class="text-base text-gray-500 dark:text-gray-400">Completed Workorders</p>
-        </div>
-    </div>
+
 </div>
 </body>
 

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -31,6 +33,7 @@ public class DeviceManagementController {
     @Autowired private NotesRepository notesRepo;
     @Autowired private CustomerRepository customerRepo;
     @Autowired private NotesRepository noteRepo;
+    @Autowired private AuditRepository auditRepo;
 
     @PostMapping("/update/{id}")
     public String update(@PathVariable Integer id, @RequestParam BigDecimal price, @RequestParam String deviceId) {
@@ -79,6 +82,13 @@ public class DeviceManagementController {
                 p.setPartSku(sku);
                 p.setDevice(device);
                 partRepo.save(p);
+
+                Audit audit = new Audit();
+                audit.setActionTaken("Added parts to device: " + p.getDevice().getDeviceName());
+                audit.setTimestamp(OffsetDateTime.from(Instant.now()));
+                audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+                auditRepo.save(audit);
+
                 return "redirect:/view/" + id;
             }
 
@@ -112,12 +122,25 @@ public class DeviceManagementController {
             }
         }
 
+        Audit audit = new Audit();
+        audit.setActionTaken("Added notes to device: " + d.getDeviceName());
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(u.getUsername());
+        auditRepo.save(audit);
+
         return "redirect:/view/" + id;
     }
 
     @PostMapping("/delete-note/{id}")
     public String deleteNote(@PathVariable Integer id, Integer deviceId) {
         notesRepo.deleteById(id);
+
+        Audit audit = new Audit();
+        audit.setActionTaken("Removed notes from device: " + deviceId);
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        auditRepo.save(audit);
+
         return "redirect:/view/" + deviceId;
     }
 
@@ -147,6 +170,12 @@ public class DeviceManagementController {
         device.setStatus("Awaiting Repair");
         device.setTimestamp(Instant.now());
         deviceRepo.save(device);
+
+        Audit audit = new Audit();
+        audit.setActionTaken("Checked in device: " + deviceId);
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        auditRepo.save(audit);
 
         httpResponse.sendRedirect("/devices");
         return null;
@@ -210,6 +239,13 @@ public class DeviceManagementController {
     @GetMapping("/delete/{id}")
     public String deleteDevice(@PathVariable Integer id) {
         deviceRepo.deleteById(id);
+
+        Audit audit = new Audit();
+        audit.setActionTaken("Deleted a workorder: " + id);
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        auditRepo.save(audit);
+
         return "redirect:/";
     }
 

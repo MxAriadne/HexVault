@@ -3,12 +3,15 @@ package com.freyja.hexvault.controllers;
 import com.freyja.hexvault.entities.*;
 import com.freyja.hexvault.repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @Controller
@@ -19,6 +22,7 @@ public class InventoryManagementController {
     @Autowired private SKURepository skuRepo;
     @Autowired private PartsRepository partsRepo;
     @Autowired private CustomerRepository customerRepo;
+    @Autowired private AuditRepository auditRepo;
 
     @GetMapping("/inventory")
     public String parts(Model model) {
@@ -36,12 +40,26 @@ public class InventoryManagementController {
         sku.setIsService(limited.equals("Is this a service?"));
         sku.setQuantity(0);
         skuRepo.save(sku);
+
+        Audit audit = new Audit();
+        audit.setActionTaken("Created a new part in secondary inventory ID: " + sku.getId());
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        auditRepo.save(audit);
+
         return "redirect:/inventory";
     }
 
     @PostMapping("/delete-sku")
     public String deletePart(@RequestParam Integer partId) {
         skuRepo.deleteById(partId);
+
+        Audit audit = new Audit();
+        audit.setActionTaken("Deleted a part in secondary inventory ID: " + partId);
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        auditRepo.save(audit);
+
         return "redirect:/inventory";
     }
 
@@ -82,6 +100,12 @@ public class InventoryManagementController {
         po.setTotalPrice(BigDecimal.valueOf(0.00));
         purchaseOrderRepo.save(po);
 
+        Audit audit = new Audit();
+        audit.setActionTaken("Created a new purchase order ID: " + po.getId());
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        auditRepo.save(audit);
+
         return "redirect:/purchasing";
     }
 
@@ -100,6 +124,13 @@ public class InventoryManagementController {
     @PostMapping("/delete-po/{poId}")
     public String deletePO(@PathVariable(required = false) Integer poId) {
         purchaseOrderRepo.deleteById(poId);
+
+        Audit audit = new Audit();
+        audit.setActionTaken("Deleted purchase order ID: " + poId);
+        audit.setTimestamp(OffsetDateTime.ofInstant(Instant.now(), ZoneOffset.UTC));
+        audit.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        auditRepo.save(audit);
+
         return "redirect:/purchasing";
     }
 
