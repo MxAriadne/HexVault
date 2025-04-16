@@ -55,7 +55,7 @@ public class UserManagementController {
     @PostMapping("/api/register")
     public String requestAccount() {
 
-        // TODO: Make a new table on the database for notifications and send one to admins for them to approve, this would forward to api/register/approve
+
 
         return "redirect:/";
     }

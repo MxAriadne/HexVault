@@ -190,6 +190,14 @@ public class DeviceManagementController {
         return "dashboard";
     }
 
+    @GetMapping({"/customer", "/customer/{id}"})
+    public String dashboard(@PathVariable Integer id, Model model) {
+
+        model.addAttribute("customers", deviceRepo.findAllByCustomer(customerRepo.findById(id).get()));
+
+        return "customerview";
+    }
+
     @GetMapping("/{type}")
     public String greeting(Model model, @PathVariable String type) {
 
